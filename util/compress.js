@@ -1,14 +1,18 @@
 const sharp = require("sharp");
 
 function compress(input, webp, grayscale, quality, originSize) {
-	const format = webp ? "webp" : "jpeg";
+	let format = webp ? "webp" : "jpeg";
+	let compressionQuality = quality * 0.05
+
+	quality = Math.ceil(compressionQuality);
+	
 
 	return sharp(input)
 		.grayscale(grayscale)
 		.toFormat(format, {
 			quality: quality,
-			progressive: true,
-			optimizeScans: true
+			effort: 1,
+			chromaSubsampling: '4:2:0'
 		})
 		.toBuffer({resolveWithObject: true})
 		.then(({data: output,info}) => {	// this way we can also get the info about output image, like height, width
